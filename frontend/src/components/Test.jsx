@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import HardAudio1 from "../assets/audio/HardAudio1.mp4";
+import MediumAudio1 from "../assets/audio/MediumAudio1.mp4";
 
-const Test = ({ paragraph, timing }) => {
+const Test = ({ paragraph, timing, audioSrc }) => {
   const [inputText, setInputText] = useState('');
   const [backspaceCount, setBackspaceCount] = useState(0);
   const [timer, setTimer] = useState(timing);
   const [isStarted, setIsStarted] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     if (isStarted && timer > 0) {
@@ -15,11 +18,23 @@ const Test = ({ paragraph, timing }) => {
       return () => clearInterval(countdown);
     } else if (timer === 0) {
       setIsCompleted(true);
+      audioRef.current.pause();
     }
   }, [isStarted, timer]);
 
   const handleStart = () => {
     setIsStarted(true);
+    audioRef.current.play();
+  };
+
+  const handleReset = () => {
+    setInputText('');
+    setBackspaceCount(0);
+    setTimer(timing);
+    setIsStarted(false);
+    setIsCompleted(false);
+    audioRef.current.pause();
+    audioRef.current.currentTime = 0;
   };
 
   const handleChange = (e) => {
@@ -56,29 +71,44 @@ const Test = ({ paragraph, timing }) => {
 
   return (
     <div>
-      <p className="text-lg mb-4">{renderTextWithHighlights()}</p>
-      <textarea
-        className="w-full p-2 border border-gray-300 rounded mt-4"
-        rows="5"
-        value={inputText}
-        onChange={handleChange}
-        disabled={!isStarted || isCompleted}
-        placeholder="Start typing here..."
-      />
-      <button
-        onClick={handleStart}
-        disabled={isStarted}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-      >
-        Start
-      </button>
-      <div className="mt-4">
-        <p>Time Left: {timer} seconds</p>
-        <p>Backspaces: {backspaceCount}</p>
-        {isCompleted && (
-          <p>Typing Speed: {calculateWPM()} WPM</p>
-        )}
+      <div className='flex w-full justify-center'>
+        <p className="text-lg mb-4 w-[70%] text-center tracking-[1px]">{renderTextWithHighlights()}</p>
       </div>
+      <div className='flex w-full justify-center'>
+        <textarea
+            className="w-[70%] p-2 border border-gray-300 rounded-xl mt-4"
+            rows="5"
+            value={inputText}
+            onChange={handleChange}
+            disabled={!isStarted || isCompleted}
+            placeholder="Start typing here..."
+        />
+      </div>
+      <div className='flex flex-col gap-4 items-center'>
+        <div className="flex gap-4">
+            <button
+                onClick={handleStart}
+                disabled={isStarted}
+                className="mt-4 px-6 py-2 bg-blue-500 text-white rounded"
+            >
+                Start
+            </button>
+            <button
+                onClick={handleReset}
+                className="mt-4 px-6 py-2 bg-red-500 text-white rounded"
+            >
+                Reset
+            </button>
+        </div>
+        <div className="mt-4 flex flex-col items-center justify-center">
+            <p>Time Left: {timer} seconds</p>
+            <p>Backspaces: {backspaceCount}</p>
+            {isCompleted && (
+            <p>Typing Speed: {calculateWPM()} WPM</p>
+            )}
+        </div>
+      </div>
+      <audio ref={audioRef} src={audioSrc} loop />
     </div>
   );
 };

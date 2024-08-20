@@ -1,11 +1,12 @@
 import Test from '../components/Test';
 import paragraphs from '../data/paragraphs';
+import MediumAudio1 from "../assets/audio/MediumAudio1.mp4";
 
 const Medium = () => {
   return (
     <div>
-      <h1>Medium Level</h1>
-      <Test paragraph={paragraphs[Math.floor(Math.random() * paragraphs.length)]} timing={45} />
+      <h1 className='text-center text-3xl mb-4'>Medium Level</h1>
+      <Test paragraph={paragraphs[Math.floor(Math.random() * paragraphs.length)]} timing={45} audioSrc={MediumAudio1} />
     </div>
   );
 };
