@@ -6,7 +6,7 @@ const Medium = () => {
   return (
     <div>
       <h1 className='text-center text-3xl mb-4'>Medium Level</h1>
-      <Test paragraph={paragraphs[Math.floor(Math.random() * paragraphs.length)]} timing={45} audioSrc={MediumAudio1} />
+      <Test paragraph={paragraphs[Math.floor(Math.random() * paragraphs.length)]} timing={40} audioSrc={MediumAudio1} />
     </div>
   );
 };

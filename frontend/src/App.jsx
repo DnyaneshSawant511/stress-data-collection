@@ -13,6 +13,7 @@ function App() {
         <NavLink to="/hard" className={({ isActive }) => (isActive ? 'text-[#008bc2] text-[18px]' : 'text-[18px]')}>Hard</NavLink>
       </div>
       <Routes>
+        <Route path="/" element={<Easy />} />
         <Route path="/easy" element={<Easy />} />
         <Route path="/medium" element={<Medium />} />
         <Route path="/hard" element={<Hard />} />

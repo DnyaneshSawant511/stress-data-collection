@@ -5,6 +5,7 @@ import MediumAudio1 from "../assets/audio/MediumAudio1.mp4";
 const Test = ({ paragraph, timing, audioSrc }) => {
   const [inputText, setInputText] = useState('');
   const [backspaceCount, setBackspaceCount] = useState(0);
+  const [correctLetterCount, setCorrectLetterCount] = useState(0);
   const [timer, setTimer] = useState(timing);
   const [isStarted, setIsStarted] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -30,6 +31,7 @@ const Test = ({ paragraph, timing, audioSrc }) => {
   const handleReset = () => {
     setInputText('');
     setBackspaceCount(0);
+    setCorrectLetterCount(0);
     setTimer(timing);
     setIsStarted(false);
     setIsCompleted(false);
@@ -40,17 +42,26 @@ const Test = ({ paragraph, timing, audioSrc }) => {
   const handleChange = (e) => {
     if (isCompleted) return;
 
+    const inputValue = e.target.value;
+
     if (e.nativeEvent.inputType === 'deleteContentBackward') {
       setBackspaceCount(backspaceCount + 1);
+    } else {
+      const correctLetters = paragraph.split('').filter((char, index) => char === inputValue[index]);
+      setCorrectLetterCount(correctLetters.length);
     }
 
-    setInputText(e.target.value);
+    setInputText(inputValue);
   };
 
   const calculateWPM = () => {
     const wordsTyped = inputText.split(' ').filter(word => word.length > 0).length;
     const timeTaken = (timing - timer) / 60; // Time in minutes
     return timeTaken > 0 ? Math.round(wordsTyped / timeTaken) : 0;
+  };
+
+  const calculateErrorRate = () => {
+    return correctLetterCount > 0 ? (backspaceCount / correctLetterCount).toFixed(2) : 0;
   };
 
   const renderTextWithHighlights = () => {
@@ -104,7 +115,10 @@ const Test = ({ paragraph, timing, audioSrc }) => {
             <p>Time Left: {timer} seconds</p>
             <p>Backspaces: {backspaceCount}</p>
             {isCompleted && (
-            <p>Typing Speed: {calculateWPM()} WPM</p>
+              <>
+                <p>Typing Speed: {calculateWPM()} WPM</p>
+                <p>Error Rate: {calculateErrorRate()}</p>
+              </>
             )}
         </div>
       </div>
