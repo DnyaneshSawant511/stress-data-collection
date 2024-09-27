@@ -6,6 +6,7 @@ const Test = ({ paragraph, timing, audioSrc }) => {
   const [inputText, setInputText] = useState('');
   const [backspaceCount, setBackspaceCount] = useState(0);
   const [correctLetterCount, setCorrectLetterCount] = useState(0);
+  const [incorrectLetterCount, setIncorrectLetterCount] = useState(0);
   const [timer, setTimer] = useState(timing);
   const [isStarted, setIsStarted] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -32,6 +33,7 @@ const Test = ({ paragraph, timing, audioSrc }) => {
     setInputText('');
     setBackspaceCount(0);
     setCorrectLetterCount(0);
+    setIncorrectLetterCount(0);
     setTimer(timing);
     setIsStarted(false);
     setIsCompleted(false);
@@ -48,20 +50,37 @@ const Test = ({ paragraph, timing, audioSrc }) => {
       setBackspaceCount(backspaceCount + 1);
     } else {
       const correctLetters = paragraph.split('').filter((char, index) => char === inputValue[index]);
+      const incorrectLetters = inputValue.split('').filter((char, index) => char !== paragraph[index]);
+
       setCorrectLetterCount(correctLetters.length);
+      setIncorrectLetterCount(incorrectLetters.length);
     }
 
     setInputText(inputValue);
   };
 
-  const calculateWPM = () => {
-    const wordsTyped = inputText.split(' ').filter(word => word.length > 0).length;
+  const calculateCorrectWPM = () => {
+    const words = paragraph.split(' ');
+    const typedWords = inputText.split(' ');
+    let correctWordsCount = 0;
+
+    typedWords.forEach((word, index) => {
+      if (word === words[index]) {
+        correctWordsCount++;
+      }
+    });
+
     const timeTaken = (timing - timer) / 60; // Time in minutes
-    return timeTaken > 0 ? Math.round(wordsTyped / timeTaken) : 0;
+    return timeTaken > 0 ? Math.round(correctWordsCount / timeTaken) : 0;
+  };
+
+  const calculateAccuracy = () => {
+    const totalTyped = correctLetterCount + incorrectLetterCount;
+    return totalTyped > 0 ? ((correctLetterCount / totalTyped) * 100).toFixed(2) : '0.00';
   };
 
   const calculateErrorRate = () => {
-    return correctLetterCount > 0 ? (backspaceCount / correctLetterCount).toFixed(2) : 0;
+    return correctLetterCount > 0 ? (backspaceCount / correctLetterCount).toFixed(5) : 0;
   };
 
   const renderTextWithHighlights = () => {
@@ -116,7 +135,8 @@ const Test = ({ paragraph, timing, audioSrc }) => {
             <p>Backspaces: {backspaceCount}</p>
             {isCompleted && (
               <>
-                <p>Typing Speed: {calculateWPM()} WPM</p>
+                <p>Correct Typing Speed: {calculateCorrectWPM()} WPM</p>
+                <p>Accuracy: {calculateAccuracy()}%</p>
                 <p>Error Rate: {calculateErrorRate()}</p>
               </>
             )}

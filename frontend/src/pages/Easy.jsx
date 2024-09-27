@@ -5,7 +5,7 @@ const Easy = () => {
   return (
     <div>
       <h1 className='text-center text-3xl mb-4'>Easy Level</h1>
-      <Test paragraph={paragraphs[Math.floor(Math.random() * paragraphs.length)]} timing={40} />
+      <Test paragraph={paragraphs[Math.floor(Math.random() * paragraphs.length)]} timing={30} />
     </div>
   );
 };
