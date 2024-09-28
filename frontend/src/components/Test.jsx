@@ -138,6 +138,15 @@ const Test = ({ paragraph, timing, audioSrc }) => {
                 <p>Correct Typing Speed: {calculateCorrectWPM()} WPM</p>
                 <p>Accuracy: {calculateAccuracy()}%</p>
                 <p>Error Rate: {calculateErrorRate()}</p>
+                <p className="text-blue-500 underline">
+                  <a
+                    href="https://forms.gle/boz9gaPmEtk6m7Vr5" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    Please fill your results in the form
+                  </a>
+                </p>
               </>
             )}
         </div>
